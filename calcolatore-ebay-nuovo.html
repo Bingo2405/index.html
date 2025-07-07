@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8" />
+  <title>Calcolatore Guadagno eBay - Vendite</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap');
+
+    body {
+      font-family: 'Poppins', sans-serif;
+      background: linear-gradient(135deg, #FFFAF0 0%, #E0F7FA 100%);
+      margin: 0;
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 20px;
+      color: #3E3E3E;
+    }
+
+    .container {
+      background: #fff;
+      color: #3E3E3E;
+      border-radius: 20px;
+      padding: 30px 40px;
+      box-shadow: 0 15px 40px rgba(255, 165, 79, 0.3);
+      max-width: 420px;
+      width: 100%;
+      border: 3px solid #FFA84C;
+    }
+
+    h1 {
+      text-align: center;
+      margin-bottom: 25px;
+      font-weight: 700;
+      color: #FF6F00; /* arancio scuro */
+      letter-spacing: 1.5px;
+      text-shadow: 1px 1px 4px #FFD180;
+    }
+
+    label {
+      display: block;
+      margin-top: 18px;
+      font-weight: 600;
+      color: #555;
+    }
+
+    input[type="number"] {
+      width: 100%;
+      padding: 12px 14px;
+      margin-top: 6px;
+      border-radius: 10px;
+      border: 2px solid #ddd;
+      font-size: 16px;
+      transition: border-color 0.3s ease, box-shadow 0.3s ease;
+      outline: none;
+      background: #FFF8E1;
+      color: #3E3E3E;
+      font-weight: 500;
+    }
+
+    input[type="number"]::placeholder {
+      color: #AAA378;
+      font-style: italic;
+    }
+
+    input[type="number"]:focus {
+      border-color: #FF6F00;
+      box-shadow: 0 0 8px #FFB74Daa;
+      background: #FFF3E0;
+    }
+
+    button {
+      margin-top: 30px;
+      width: 100%;
+      padding: 14px;
+      background: #FF6F00;
+      color: white;
+      font-size: 18px;
+      font-weight: 700;
+      border: none;
+      border-radius: 12px;
+      cursor: pointer;
+      box-shadow: 0 8px 20px rgba(255, 111, 0, 0.6);
+      transition: background 0.3s ease, transform 0.15s ease;
+    }
+
+    button:hover {
+      background: #e65a00;
+      box-shadow: 0 12px 24px rgba(230, 90, 0, 0.8);
+      transform: scale(1.03);
+    }
+
+    #risultato {
+      margin-top: 30px;
+      font-size: 20px;
+      font-weight: 700;
+      text-align: center;
+      color: #2E7D32; /* verde scuro */
+      min-height: 28px;
+      text-shadow: 1px 1px 2px #A5D6A7;
+    }
+
+    #risultato.show {
+      animation: popIn 0.4s ease forwards;
+    }
+
+    @keyframes popIn {
+      0% {
+        opacity: 0;
+        transform: scale(0.8);
+      }
+      100% {
+        opacity: 1;
+        transform: scale(1);
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container" role="main" aria-label="Calcolatore Guadagno eBay lato vendite">
+    <h1>Calcolatore Guadagno eBay</h1>
+
+    <label for="prezzo">Prezzo di vendita (€):</label>
+    <input type="number" id="prezzo" step="0.01" placeholder="Es. 54.50" aria-required="true" />
+
+    <label for="spedizione">Spese di spedizione (€):</label>
+    <input type="number" id="spedizione" step="0.01" placeholder="Es. 5.00" aria-required="true" />
+
+    <label for="costo">Costo del prodotto (€ - facoltativo):</label>
+    <input type="number" id="costo" step="0.01" placeholder="Es. 30.00" />
+
+    <button type="button" onclick="calcolaGuadagno()">Calcola Guadagno Netto</button>
+
+    <div id="risultato" role="alert" aria-live="polite"></div>
+  </div>
+
+  <script>
+    function calcolaGuadagno() {
+      let prezzo = parseFloat(document.getElementById("prezzo").value);
+      let spedizione = parseFloat(document.getElementById("spedizione").value);
+      let costo = parseFloat(document.getElementById("costo").value);
+
+      if (isNaN(costo)) costo = 0;
+
+      const risultatoEl = document.getElementById("risultato");
+      risultatoEl.classList.remove("show");
+
+      if (isNaN(prezzo) || isNaN(spedizione)) {
+        risultatoEl.textContent = "Inserisci prezzo e spedizione.";
+        return;
+      }
+
+      let totaleVendita = prezzo + spedizione;
+
+      let commissione;
+      if (totaleVendita <= 2000) {
+        commissione = totaleVendita * 0.05;
+      } else {
+        commissione = (2000 * 0.05) + ((totaleVendita - 2000) * 0.02);
+      }
+
+      let fisso = 0.35;
+      let adeguamento = totaleVendita * 0.0043;
+
+      let guadagno = totaleVendita - commissione - fisso - adeguamento - costo;
+
+      risultatoEl.textContent = "Guadagno netto: € " + guadagno.toFixed(2);
+      void risultatoEl.offsetWidth; // trigger reflow per animazione
+      risultatoEl.classList.add("show");
+    }
+  </script>
+</body>
+</html>
